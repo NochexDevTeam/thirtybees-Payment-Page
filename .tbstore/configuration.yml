@@ -12,5 +12,5 @@ tags:
 description_short: The Nochex Payment Gateway module allows you to accept payments by Nochex.
 description: description.md
 images:
-  - logo.png
+  - image-1.png
 license: AFL
