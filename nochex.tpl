@@ -18,9 +18,7 @@ color: #777777;
 
 <p class="payment_module">
 	<a href="javascript:$('#nochex_form').submit();" title="{l s='Pay with Nochex APC' mod='NoChex'}" style="padding: 0;width: 49%;" class="nochex">
-		
-		<img src="https://www.nochex.com/logobase-secure-images/logobase-banners/clear-amex-mp.png" style="height:100px;">
-	
+		<img src="https://www.nochex.com/logobase-secure-images/logobase-banners/clear-mp.png" style="height:100px;">
 	</a>
 </p>
 
@@ -41,12 +39,12 @@ color: #777777;
 	<input type='hidden' name='delivery_city' value="{$delivery_city}" />
 	<input type='hidden' name='delivery_country' value="{$delivery_country}" />
 	<input type='hidden' name='delivery_postcode' value="{$delivery_postcode}" />
-    <input type='hidden' name='customer_phone_number' value="{$customer_phone_number}" />
+        <input type='hidden' name='customer_phone_number' value="{$customer_phone_number}" />
 	<input type='hidden' name='email_address' value="{$email_address}" />
 	<input type='hidden' name='order_id' value="{$order_id}" />
 	<input type='hidden' name='optional_1' value="{$optional_1}" />
 	<input type='hidden' name='optional_2' value="{$optional_2}" />
-    <input type='hidden' name='success_url' value="{$successurl}"/>
+        <input type='hidden' name='success_url' value="{$successurl}"/>
 	<input type='hidden' name='test_success_url' value="{$successurl}"/>
 	<input type='hidden' name='cancel_url' value="{$cancelurl}"/>
 	<input type='hidden' name='declined_url' value="{$cancelurl}"/>
