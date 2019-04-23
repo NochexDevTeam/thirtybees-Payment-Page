@@ -2,7 +2,7 @@
 /*
 Plugin Name: Nochex Payment Gateway for Thirty bees
 Description: Accept Nochex Payments, orders are updated using APC.
-Version: 2.0
+Version: 2.2
 License: GPL2
 */
 
@@ -22,14 +22,14 @@ class nochex extends PaymentModule
 		$this->name = 'nochex';
 		$this->tab = 'payments_gateways';
 		$this->author = 'Nochex';
-		$this->version = 1;
+		$this->version = 2.2;
 
 		$this->currencies = true;
 		$this->currencies_mode = 'checkbox';
-		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => '1.6.99.99');
+		$this->ps_versions_compliancy = array('min' => '1.0.0', 'max' => '1.0.8');
 		
 		/*--- This array gets all of the configuration information from the Configuration file/table in the database. ---*/
-		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE','NOCHEX_APC_CALLBACK'));
+		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));
 		if (isset($config['NOCHEX_APC_EMAIL']))
 			$this->email = $config['NOCHEX_APC_EMAIL'];
 		if (isset($config['NOCHEX_APC_TESTMODE']))
@@ -41,9 +41,7 @@ class nochex extends PaymentModule
 		if (isset($config['NOCHEX_APC_XMLCOLLECTION']))
 			$this->nochex_xmlcollection = $config['NOCHEX_APC_XMLCOLLECTION'];
 		if (isset($config['NOCHEX_APC_POSTAGE']))
-			$this->nochex_postage = $config['NOCHEX_APC_POSTAGE'];	
-		if (isset($config['NOCHEX_APC_CALLBACK']))
-			$this->nochex_postage = $config['NOCHEX_APC_CALLBACK'];		
+			$this->nochex_postage = $config['NOCHEX_APC_POSTAGE'];	 
 	
 		parent::__construct(); /* The parent construct is required for translations */
 
@@ -70,8 +68,7 @@ class nochex extends PaymentModule
 				OR !Configuration::deleteByName('NOCHEX_APC_HIDEDETAILS')
 				OR !Configuration::deleteByName('NOCHEX_APC_DEBUG')
 				OR !Configuration::deleteByName('NOCHEX_APC_XMLCOLLECTION')
-				OR !Configuration::deleteByName('NOCHEX_APC_POSTAGE')				
-				OR !Configuration::deleteByName('NOCHEX_APC_CALLBACK')				
+				OR !Configuration::deleteByName('NOCHEX_APC_POSTAGE')		 		
 				OR !parent::uninstall())
 			return false;
 		return true;
@@ -97,8 +94,7 @@ class nochex extends PaymentModule
 			Configuration::updateValue('NOCHEX_APC_HIDEDETAILS', $_POST['hide_details']); /* value is checked or null, stores the state of the checkbox */
 			Configuration::updateValue('NOCHEX_APC_DEBUG', $_POST['nochex_debug']); /* value is checked or null, stores the state of the checkbox */
 			Configuration::updateValue('NOCHEX_APC_XMLCOLLECTION', $_POST['nochex_xmlcollection']); /* value is checked or null, stores the state of the checkbox */
-			Configuration::updateValue('NOCHEX_APC_POSTAGE', $_POST['nochex_postage']); /* value is checked or null, stores the state of the checkbox */			
-			Configuration::updateValue('NOCHEX_APC_CALLBACK', $_POST['nochex_callback']); /* value is checked or null, stores the state of the checkbox */			
+			Configuration::updateValue('NOCHEX_APC_POSTAGE', $_POST['nochex_postage']); /* value is checked or null, stores the state of the checkbox */		 	
 			// Refreshes the page to show updated controls.
 			header('Location: ' . $_SERVER['PHP_SELF'] . '?controller=AdminModules&token='.Tools::getValue('token').$identifier.'&configure=nochex&tab_module='.$this->l('Payments & Gateways').'&module_name=nochex');
 		}
@@ -106,7 +102,7 @@ class nochex extends PaymentModule
 	}
 	private function _displayNoChex()
 	{
-		$this->_html .= '<img src="https://www.nochex.com/logobase-secure-images/logobase-banners/clear-amex-mp.png" height="100px" style="float:left; margin-right:15px;"><br style="clear:both;"/><br style="clear:both;"/><b>'.$this->l('This module allows you to accept payments by Nochex (APC Method).').'</b><br /><br />
+		$this->_html .= '<img src="https://www.nochex.com/logobase-secure-images/logobase-banners/clear-mp.png" height="100px" style="float:left; margin-right:15px;"><br style="clear:both;"/><br style="clear:both;"/><b>'.$this->l('This module allows you to accept payments by Nochex (APC Method).').'</b><br /><br />
 		'.$this->l('If the client chooses this payment mode, the order will change its status once a positive confirmation is recieved from nochex server').'<br />
 		<br /><br />';
 	}
@@ -114,44 +110,37 @@ class nochex extends PaymentModule
 	/*---  Function returns the value to the form, which shows the state of the checkbox ---*/
 	private function _validateTestCheckbox()
 	{
-		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE','NOCHEX_APC_CALLBACK'));
+		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));
 		$this->test_mode = $config['NOCHEX_APC_TESTMODE'];
 		return $this->test_mode;
 	}
 	
 	private function _validateBillCheckbox()
 	{
-		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE','NOCHEX_APC_CALLBACK'));
+		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));
 		$this->hide_details = $config['NOCHEX_APC_HIDEDETAILS'];
 		return $this->hide_details;
 	}
 	
 	private function _validateDebugCheckbox()
 	{
-		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE','NOCHEX_APC_CALLBACK'));	
+		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));	
 		$this->nochex_debug = $config['NOCHEX_APC_DEBUG'];		
 		return $this->nochex_debug;
 	}
 	
 	private function _validateXmlcollectionCheckbox()
 	{	
-		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE','NOCHEX_APC_CALLBACK'));
+		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));
 		$this->nochex_xmlcollection = $config['NOCHEX_APC_XMLCOLLECTION'];
 		return $this->nochex_xmlcollection;
 	}
 	
 	private function _validatePostageCheckbox()
 	{
-		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE','NOCHEX_APC_CALLBACK'));
+		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));
 		$this->nochex_postage = $config['NOCHEX_APC_POSTAGE'];
 		return $this->nochex_postage;
-	}
-	
-	private function _validateCallbackCheckbox()	
-	{
-		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE','NOCHEX_APC_CALLBACK'));			
-		$this->nochex_callback = $config['NOCHEX_APC_CALLBACK'];	
-		return $this->nochex_callback;	
 	}	
 	
 	private function _displayForm()
@@ -162,7 +151,6 @@ class nochex extends PaymentModule
 	$validateDebugCheck = $this->_validateDebugCheckbox();
 	$validateXmlcollectionCheck = $this->_validateXmlcollectionCheckbox();
 	$validatePostageCheck = $this->_validatePostageCheckbox();		
-	$validateCallbackCheck = $this->_validateCallbackCheckbox();
 	
 	/*--- Form parts that are added in the Configuration file of the nochex module. ---*/
 		$this->_html .=
@@ -175,9 +163,8 @@ class nochex extends PaymentModule
 					<tr><td width="300" style="height: 35px;">'.$this->l('Test Mode').'</td><td><input type="checkbox" name="test_mode" value="checked" '. $validateTestCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;"> Test Mode, If the Test mode option has been selected, the system will be in test mode. Note (leave unchecked for Live transactions.) </p></td></tr>
 					<tr><td width="300" style="height: 35px;">'.$this->l('Hide Billing Details').'</td><td><input type="checkbox" name="hide_details" value="checked" '. $validateBillCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;"> Hide Billing Details, If the Hide Billing Details option has been checked then billing details will be hidden, Leave unchecked if you want customers to see billing details.</p></td></tr>
 					<tr><td width="300" style="height: 35px;">'.$this->l('Debug').'</td><td><input type="checkbox" name="nochex_debug" value="checked" '. $validateDebugCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;"> Debug, If the Debug option has been selected, details of the module will be saved to a file. nochex_debug.txt which can be found in the nochex module which can be found somewhere like: www.test.com/prestashop/modules/nochex/nochex_debug.txt, leave unchecked if you dont want to record data about the system.</p></td></tr>
-					<tr><td width="300" style="height: 35px;">'.$this->l('Detailed Product Information').'</td><td><input type="checkbox" name="nochex_xmlcollection" value="checked" '. $validateXmlcollectionCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;"></p></td></tr>
-					<tr><td width="300" style="height: 35px;">'.$this->l('Postage').'</td><td><input type="checkbox" name="nochex_postage" value="checked" '. $validatePostageCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;"></p></td></tr>					
-					<tr><td width="300" style="height: 35px;">'.$this->l('Callback').'</td><td><input type="checkbox" name="nochex_callback" value="checked" '. $validateCallbackCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;"></p></td></tr>					
+					<tr><td width="300" style="height: 35px;">'.$this->l('Detailed Product Information').'</td><td><input type="checkbox" name="nochex_xmlcollection" value="checked" '. $validateXmlcollectionCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;">Detailed Product Information: Display order details in a table structured format on the Nochex Payment Page</p></td></tr>
+					<tr><td width="300" style="height: 35px;">'.$this->l('Postage').'</td><td><input type="checkbox" name="nochex_postage" value="checked" '. $validatePostageCheck .' /></td><td width="950"><p style="font-style:italic; text-size:7px; padding-left:10px;">Postage: Display the Postage amount separate from the total amount on the Nochex Payment Page</p></td></tr>					
 					<tr><td></td><td><input class="button" name="btnSubmit" value="'.$this->l('Update settings').'" type="submit" /></td></tr>
 				</table>
 			</fieldset>
@@ -232,8 +219,7 @@ class nochex extends PaymentModule
 		$hide_details = Configuration::get('NOCHEX_APC_HIDEDETAILS');
 		$nochex_debug = Configuration::get('NOCHEX_APC_DEBUG');
 		$nochex_xmlcollection = Configuration::get('NOCHEX_APC_XMLCOLLECTION');
-		$nochex_postage = Configuration::get('NOCHEX_APC_POSTAGE');				
-		$nochex_callback = Configuration::get('NOCHEX_APC_CALLBACK');
+		$nochex_postage = Configuration::get('NOCHEX_APC_POSTAGE');		 
 		
 		/* Show Separate Postage Amount Feature */
 		if($nochex_postage == "checked"){
@@ -317,15 +303,12 @@ class nochex extends PaymentModule
 		//// Funtion and variable which writes to nochex_debug.txt
 		$submitOrder_Contact = 'Contact Information... customer_phone_number: ' . $bill_add_fields['phone_mobile'] . '. email_address: ' . $customer->email;	
 		
-		/* Callback Feature - This checks to see if callback has been selected: Callback won't work if it is not enabled on the merchants Nochex account. */
-		if ($nochex_callback == "checked"){
-			$enabledCB = "Yes";		
-			$callback_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/callback_validation.php?cIY='.(int)$defaultCurrency;		
-		}else{		
-			$enabledCB = "No";		
-			$callback_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/validation.php?cIY='.(int)$defaultCurrency;		
-		} 
+		/* Callback Feature - This has been updated - optional 2 wont be picked up / received in apc */
+		$enabledCB = "Yes";		
 		
+					
+		$callback_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/validation.php?cIY='.(int)$defaultCurrency;		
+
 		/* Sanitise and Validate input before processing */
 		$billing_first_name = filter_var($bill_add_fields['firstname'], FILTER_SANITIZE_STRING);
 		$billing_last_name = filter_var($bill_add_fields['lastname'], FILTER_SANITIZE_STRING);
