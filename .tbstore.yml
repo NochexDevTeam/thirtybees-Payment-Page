@@ -1,6 +1,6 @@
 module_name: Nochex Payment Gateway
-compatible_versions: 2.0
-author: Nochex
+compatible_versions: 2.0, 2.1, 2.2
+author: Thirty Bees
 category: payment
 tags:
   - checkout
