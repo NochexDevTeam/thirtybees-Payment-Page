@@ -1,6 +1,6 @@
 module_name: Nochex Payment Gateway
-compatible_versions: 2.0
-author: Nochex
+compatible_versions: 2.0, 2.1, 2.2
+author: Thirty Bees
 category: payment
 tags:
   - checkout
@@ -12,5 +12,5 @@ tags:
 description_short: The Nochex Payment Gateway module allows you to accept payments by Nochex.
 description: description.md
 images:
-  - image-1.png
+  - logo.png
 license: AFL
