@@ -23,10 +23,10 @@ class nochex extends PaymentModule
 		$this->tab = 'payments_gateways';
 		$this->author = 'Nochex';
 		$this->version = 2.2;
-
 		$this->currencies = true;
-		$this->currencies_mode = 'checkbox';
-		$this->ps_versions_compliancy = array('min' => '1.0.0', 'max' => '1.0.8');
+		$this->currencies_mode = 'checkbox';		
+		$this->tb_min_version = '1.0.0';
+        $this->tb_versions_compliancy = '> 1.0.0';
 		
 		/*--- This array gets all of the configuration information from the Configuration file/table in the database. ---*/
 		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));
@@ -193,7 +193,7 @@ class nochex extends PaymentModule
 		return $this->_html;
 	}
 
-	public function hookPayment($params)
+	public function hookDisplayPayment($params)
 	{
 		global $smarty,$cart, $currency;
 		
@@ -324,16 +324,7 @@ class nochex extends PaymentModule
 		$shipping_address = filter_var($del_add_fields['address1'], FILTER_SANITIZE_STRING);
 		$shipping_city = filter_var($del_add_fields['city'], FILTER_SANITIZE_STRING);
 		$shipping_postcode = $del_add_fields['postcode'];
-
-		$countries = Country::getCountries($bill_add_fields['id_country'], true);
-		foreach ($countries as $key => $value){
-			$billing_country = $value["iso_code"];
-		}
-
-		$delcountries = Country::getCountries($del_add_fields['id_country'], true);
-		foreach ($countries as $key => $value){
-			$delivery_country = $value["iso_code"];
-		}
+ 
  
 		$ZIPREG=array(
 		 "US"=>"^\d{5}([\-]?\d{4})?$",

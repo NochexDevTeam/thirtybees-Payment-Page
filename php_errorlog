@@ -1,0 +1,7 @@
+[03-Feb-2020 08:36:48 Europe/London] PHP Notice:  Undefined index: optional_2 in /home/pewterwo/public_html/modules/nochex/validation.php on line 33
+[03-Feb-2020 08:36:53 Europe/London] PHP Notice:  Undefined index: sticky_primary_header in /home/pewterwo/public_html/cache/smarty/compile/36/a6/9f/36a69f3943172562a936bc3710e0749922be8bd2_0.file.header.tpl.php on line 361
+[03-Feb-2020 08:36:53 Europe/London] PHP Notice:  Undefined index: header_left_alignment in /home/pewterwo/public_html/cache/smarty/compile/36/a6/9f/36a69f3943172562a936bc3710e0749922be8bd2_0.file.header.tpl.php on line 367
+[03-Feb-2020 08:36:53 Europe/London] PHP Notice:  Undefined index: header_center_alignment in /home/pewterwo/public_html/cache/smarty/compile/36/a6/9f/36a69f3943172562a936bc3710e0749922be8bd2_0.file.header.tpl.php on line 391
+[03-Feb-2020 08:36:53 Europe/London] PHP Notice:  Undefined index: header_right_alignment in /home/pewterwo/public_html/cache/smarty/compile/36/a6/9f/36a69f3943172562a936bc3710e0749922be8bd2_0.file.header.tpl.php on line 415
+[03-Feb-2020 08:36:53 Europe/London] PHP Notice:  Undefined index: HOOK_MAIN_EMNU in /home/pewterwo/public_html/cache/smarty/compile/36/a6/9f/36a69f3943172562a936bc3710e0749922be8bd2_0.file.header.tpl.php on line 461
+[03-Feb-2020 08:36:53 Europe/London] PHP Notice:  Trying to get property of non-object in /home/pewterwo/public_html/cache/smarty/compile/36/a6/9f/36a69f3943172562a936bc3710e0749922be8bd2_0.file.header.tpl.php on line 461
