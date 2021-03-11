@@ -28,6 +28,8 @@ class nochex extends PaymentModule
 		$this->tb_min_version = '1.0.0';
         $this->tb_versions_compliancy = '> 1.0.0';
 		
+		$this->controllers = ['callback_validation'];
+		
 		/*--- This array gets all of the configuration information from the Configuration file/table in the database. ---*/
 		$config = Configuration::getMultiple(array('NOCHEX_APC_EMAIL','NOCHEX_APC_TESTMODE','NOCHEX_APC_HIDEDETAILS','NOCHEX_APC_DEBUG','NOCHEX_APC_XMLCOLLECTION','NOCHEX_APC_POSTAGE'));
 		if (isset($config['NOCHEX_APC_EMAIL']))
@@ -73,6 +75,22 @@ class nochex extends PaymentModule
 			return false;
 		return true;
 	}
+
+    public function writeDebug($DebugData)
+    {
+        $nochex_debug = Configuration::get('NOCHEX_APC_DEBUG');
+        if ($nochex_debug == "checked") {
+            $debug_TimeDate = date("m/d/Y h:i:s a", time());
+            $stringData = "\n Time and Date: " . $debug_TimeDate . "... " . $DebugData ."... ";
+            $debugging = "../modules/nochex/nochex_debug.txt";
+            $f = fopen($debugging, 'a') or die("File can't open");
+            $ret = fwrite($f, $stringData);
+            if ($ret === false) {
+                die("Fwrite failed");
+            }
+            fclose($f)or die("File not close");
+        }
+    }
 
 	private function _postValidation()
 	{
@@ -304,11 +322,10 @@ class nochex extends PaymentModule
 		$submitOrder_Contact = 'Contact Information... customer_phone_number: ' . $bill_add_fields['phone_mobile'] . '. email_address: ' . $customer->email;	
 		
 		/* Callback Feature - This has been updated - optional 2 wont be picked up / received in apc */
-		$enabledCB = "Yes";		
-		
-					
-		$callback_url = (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/validation.php?cIY='.(int)$defaultCurrency;		
-
+		$enabledCB = "Enabled";		
+		// echo ;
+		$callback_url = $this->context->link->getModuleLink($this->name, 'callback_validation', [], true) . '?cIY='.(int)$defaultCurrency;		
+		 
 		/* Sanitise and Validate input before processing */
 		$billing_first_name = filter_var($bill_add_fields['firstname'], FILTER_SANITIZE_STRING);
 		$billing_last_name = filter_var($bill_add_fields['lastname'], FILTER_SANITIZE_STRING);
@@ -375,7 +392,7 @@ class nochex extends PaymentModule
 			'email_address' => $billing_email,
 			'responderurl' => $callback_url,
 			'cancelurl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'order',
-			'successurl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/success.php?id_cart='.$cart->id.'',
+			'successurl' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/success.php?id_cart='.$cart->id,
 			'optional_2' => $enabledCB,			
 		));
 		
@@ -386,7 +403,7 @@ class nochex extends PaymentModule
 		 $smarty->assign(array(
 				'teststatus' => true,
 				'test_transaction' => '100',
-				'test_success_url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/success.php?id_cart='.$cart->id.''));
+				'test_success_url' => (Configuration::get('PS_SSL_ENABLED') ? 'https://' : 'http://').htmlspecialchars($_SERVER['HTTP_HOST'], ENT_COMPAT, 'UTF-8').__PS_BASE_URI__.'modules/nochex/success.php?id_cart='.$cart->id));
 				
 		// Funtion and variable which writes to nochex_debug.txt
 		$test_mode_Info = 'test_status = true'; 
