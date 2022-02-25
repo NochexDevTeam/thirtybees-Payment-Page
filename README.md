@@ -1,4 +1,4 @@
-Nochex Module for thirty bees
+Nochex Module for thirty bees - Tested Up to thirty bees 1.3
 ============
 
 Installation
