@@ -13,6 +13,10 @@ Visit our Knowledgebase for support: https://support.nochex.com/
 Changelog
 =====================
 
+= 2.0.5 =
+
+- Small change to APC page
+
 = 2.0.4 =
 
 - APC / Callback bug fixes in relation to latest release of Thirtybees
