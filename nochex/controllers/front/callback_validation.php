@@ -64,7 +64,7 @@ if(isset($_POST["optional_2"]) == "Enabled"){
 
 } else { 
 
-    $url = "https://www.nochex.com/apcnet/apc.aspx";
+    $url = "https://secure.nochex.com/apc/apc.aspx";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, true);
